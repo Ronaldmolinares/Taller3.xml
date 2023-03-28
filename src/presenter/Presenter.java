@@ -44,6 +44,7 @@ public class Presenter {
 				break;
 				
 			case 5:
+                //  lógica de salida de la aplicación.
 				exit = true;
 				System.exit(0);
 				break;
