@@ -24,6 +24,13 @@ public class Presenter {
         int numBed =  view.readInt("Ingrese el numero de camas de la habitación: ");
     }
 
+    private void addPatient() {
+        view.showMessage("Se debe crear primero una habitacion para poder agregar el nuevo paciente." + "\n");
+        int id = view.readInt("Ingrese el id de la habitacion en la que estara el paciente: ");
+        view.read("Ingrese el nombre del paciente: ");
+        view.read("Ingrese el apellido del paciente: ");
+    }
+
     public static void main(String[] args) {	
 		new Presenter().run();	
 	}
