@@ -7,15 +7,51 @@ public class Presenter {
     private View view = new View();
     
     private void run() {
-        view.showMessage("******** Bienvenido a AppColsanitas ********");
-        view.showMessage("1. Crear habitacion.");
-		view.showMessage("2. Crear paciente.");
-        view.showMessage("3. Mostrar historial de pacientes por habitacion.");
-		view.showMessage("4. Generar XML.");
-		view.showMessage("5. Salir.");
+        boolean exit = false;
+		int option;
 
-		int option = view.readInt("Seleccione una de las opciones ");
+		do {
+			view.showMessage("******** Bienvenido a AppColsanitas ********");
+			view.showMessage("1. Crear habitacion.");
+			view.showMessage("2. Crear paciente.");
+			view.showMessage("3. Mostrar historial de pacientes por habitacion.");
+			view.showMessage("4. Generar XML.");
+			view.showMessage("5. Salir.");
+
+			option = view.readInt("Seleccione una de las opciones ");
+
+			switch (option) {
+			case 1:
+				addRoom();
+				break;
+
+			case 2:			
+				addPatient();		
+				break;
+				
+			case 3:
+				historyRooms();
+				break;
+
+			case 4:
+				saveXML();
+				break;
+				
+			case 5:
+				exit = true;
+				System.exit(0);
+				break;
+
+			default:
+				view.showMessage("Solo números entre 1 y 5");
+			}
+
+		} while (!exit);
     }
+
+    private void historyRooms(){}
+
+    private void saveXML(){}
 
     private void addRoom() {
         int id = view.readInt("Ingrese el id de la habitacion: ");
