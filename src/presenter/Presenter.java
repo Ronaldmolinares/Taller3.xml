@@ -10,10 +10,10 @@ public class Presenter {
 	Patient patient;
 	FileXML fileXML;
 	Sql sql = new Sql();
-    private View view = new View();
-    
-    private void run() {
-        boolean exit = false;
+	private View view = new View();
+
+	private void run() {
+		boolean exit = false;
 		int option;
 
 		do {
@@ -27,36 +27,36 @@ public class Presenter {
 			option = view.readInt("Seleccione una de las opciones ");
 
 			switch (option) {
-			case 1:
-				addRoom();
-				break;
+				case 1:
+					addRoom();
+					break;
 
-			case 2:			
-				addPatient();		
-				break;
-				
-			case 3:
-				historyRooms();
-				break;
+				case 2:
+					addPatient();
+					break;
 
-			case 4:
-				saveXML();
-				break;
-				
-			case 5:
-                //  lógica de salida de la aplicación.
-				exit = true;
-				System.exit(0);
-				break;
+				case 3:
+					historyRooms();
+					break;
 
-			default:
-				view.showMessage("Solo números entre 1 y 5");
+				case 4:
+					saveXML();
+					break;
+
+				case 5:
+					// lógica de salida de la aplicación.
+					exit = true;
+					System.exit(0);
+					break;
+
+				default:
+					view.showMessage("Solo números entre 1 y 5");
 			}
 
 		} while (!exit);
-    }
+	}
 
-    private void historyRooms() {
+	private void historyRooms() {
 		int id = view.readInt("Ingrese el id de la habitación: ");
 		int posRoom = sql.findRoom(id);
 
@@ -64,8 +64,9 @@ public class Presenter {
 			Room r = sql.getListRoom().get(posRoom);
 			if (r.getId() == id) {
 				for (Patient p : r.getListPatients()) {
-					System.out.println("Nombre: "+ p.getName() + ", Apellido: " + p.getLastName() + ", Telefono: " + p.getPhone());			
-				}		
+					System.out.println("Nombre: " + p.getName() + ", Apellido: " + p.getLastName() + ", Telefono: "
+							+ p.getPhone());
+				}
 			}
 		} else {
 			Exception e = new DuplicateException("La habitacion no existe.");
@@ -73,30 +74,55 @@ public class Presenter {
 		}
 	}
 
-    private void saveXML(){}
+	private void saveXML() {
+	}
 
-    private void addRoom() {
-        try {
+	private void addRoom() {
+		try {
 			int id = view.readInt("Ingrese el id de la habitacion: ");
 			int posRoom = sql.findRoom(id);
 
 			if (posRoom == -1) {
-				short numRoom = view.readShort("Ingrese el numero de piso de la habitacion: ");
+
+				boolean exit1 = false;
+				short numRoom = 0;
+				while (!exit1) {
+					numRoom = view.readShort("Ingrese el numero de piso de la habitacion: ");
+					if (numRoom >= 1 && numRoom <= 30) {
+						exit1 = true;
+					} else {
+						view.showMessage("El número de piso solo debe ser de 1 a 30." + "\n");
+					}
+				}
+
 				int numFloor = view.readShort("Ingrese el numero de la habitacion: ");
 
-				Room r = sql.getListRoom().get(posRoom);
+				// Room r = sql.getListRoom().get(posRoom);
 				boolean isRoomFloor = false;
 
 				for (Room ro : sql.getListRoom()) {
-					if (numRoom == r.getRoomNumber() && numFloor == r.getFloorNumber())
+					if (numRoom == ro.getRoomNumber() && numFloor == ro.getFloorNumber())
 						isRoomFloor = true;
-				} if (!isRoomFloor) {
-					int numBed =  view.readInt("Ingrese el numero de camas de la habitación: ");
-					Room room = new Room (id,  numFloor, numRoom, numBed);
-					sql.addRoom(room);
-				} else {
-					view.showMessage("La habitacion en el piso " + numFloor + " y con numero " + numRoom + " ya existe.");
 				}
+
+				if (!isRoomFloor) {
+					boolean exit = false;
+					while (!exit) {
+						int numBed = view.readInt("Ingrese el numero de camas de la habitación: ");
+						if (numBed >= 1 && numBed <= 5) {
+							Room room = new Room(id, numFloor, numRoom, numBed);
+							sql.addRoom(room);
+							exit = true;
+						} else {
+							view.showMessage("El número de camas solo debe ser de 1 a 5." + "\n");
+						}
+					}
+
+				} else {
+					view.showMessage(
+							"La habitacion en el piso " + numFloor + " y con numero " + numRoom + " ya existe.");
+				}
+
 			} else {
 				Exception e = new DuplicateException("Ya existe esta habitacion.");
 				view.showMessage(e.getMessage());
@@ -106,24 +132,32 @@ public class Presenter {
 			Exception e = new ValueNotFoundException("Ya existe esta habitacionnnnn.");
 			view.showMessage(e.getMessage());
 		}
-    }
+	}
 
-    private void addPatient() {
-        
+	private void addPatient() {
+
 		if (sql.getListRoom().size() == 0) {
 			view.showMessage("Se debe crear primero una habitacion para poder agregar el nuevo paciente." + "\n");
 		} else {
 
 			try {
 				int id = view.readInt("Ingrese el id de la habitacion en la que estara el paciente: ");
-				if (sql.findRoom(id) != -1) {
-					patient = new Patient (view.read("Ingrese el nombre del paciente: "),
+				int position = sql.findRoom(id);
+
+				if (position != -1) {
+
+					Room roomPos = sql.getListRoom().get(position);
+
+					if (roomPos.getListPatients().size() < roomPos.getBedNumbers()) {
+						patient = new Patient(view.read("Ingrese el nombre del paciente: "),
 							view.read("Ingrese el apellido del paciente: "),
 							view.read("Ingrese el numero de contacto del paciente: "),
-							Status.ACTIVE
-							);
+							Status.ACTIVE);
 
-					room.addPatient(patient);
+						roomPos.addPatient(patient);
+					} else {
+						view.showMessage("se excede el número de camas ");
+					}
 				} else {
 					Exception e = new DuplicateException("La habitacion no existe.");
 					view.showMessage(e.getMessage());
@@ -133,10 +167,10 @@ public class Presenter {
 				e = new ValueNotFoundException("La habitacion no existe.");
 				view.showMessage(e.getMessage());
 			}
-		}     
-    }
+		}
+	}
 
-    public static void main(String[] args) {	
-		new Presenter().run();	
+	public static void main(String[] args) {
+		new Presenter().run();
 	}
 }
