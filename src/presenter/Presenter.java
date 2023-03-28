@@ -43,6 +43,7 @@ public class Presenter {
 				break;
 				
 			case 5:
+                //  lógica de salida de la aplicación.
 				exit = true;
 				System.exit(0);
 				break;
@@ -54,7 +55,22 @@ public class Presenter {
 		} while (!exit);
     }
 
-    private void historyRooms(){}
+    private void historyRooms() {
+		int id = view.readInt("Ingrese el id de la habitación: ");
+		int posRoom = sql.findRoom(id);
+
+		if (posRoom != -1) {
+			Room r = sql.getListRoom().get(posRoom);
+			if (r.getId() == id) {
+				for (Patient p : r.getListPatients()) {
+					System.out.println("Nombre: "+ p.getName() + ", Apellido: " + p.getLastName() + ", Telefono: " + p.getPhone());			
+				}		
+			}
+		} else {
+			Exception e = new DuplicateException("La habitacion no existe.");
+			view.showMessage(e.getMessage());
+		}
+	}
 
     private void saveXML(){}
 
