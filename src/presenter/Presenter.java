@@ -63,9 +63,13 @@ public class Presenter {
 		if (posRoom != -1) {
 			Room r = sql.getListRoom().get(posRoom);
 			if (r.getId() == id) {
+				
 				for (Patient p : r.getListPatients()) {
+					//cambio
+					if (p.getStatus().equals(Status.ACTIVE)) {
 					System.out.println("Nombre: " + p.getName() + ", Apellido: " + p.getLastName() + ", Telefono: "
 							+ p.getPhone());
+					}
 				}
 			}
 		} else {
@@ -150,13 +154,29 @@ public class Presenter {
 
 					if (roomPos.getListPatients().size() < roomPos.getBedNumbers()) {
 						patient = new Patient(view.read("Ingrese el nombre del paciente: "),
-							view.read("Ingrese el apellido del paciente: "),
-							view.read("Ingrese el numero de contacto del paciente: "),
-							Status.ACTIVE);
-
+						view.read("Ingrese el apellido del paciente: "),
+						view.read("Ingrese el numero de contacto del paciente: "),
+						Status.ACTIVE);
 						roomPos.addPatient(patient);
+
 					} else {
-						view.showMessage("se excede el número de camas ");
+						for (Patient p : roomPos.getListPatients()) {
+							view.showMessage("Lista de pacientes en estado activo: ");
+							if (p.getStatus().equals(Status.ACTIVE)) {
+								view.showMessage("Nombre: " + p.getName() + ", Apellido: " + p.getLastName() + ", Telefono: "
+								+ p.getPhone());
+							}
+						}
+						view.showMessage("se excede el número de camas para agregar otro paciente, sin embargo se va remplazar al paciente en la posicion que elija. ");
+
+						patient = new Patient(view.read("Ingrese el nombre del paciente: "),
+					view.read("Ingrese el apellido del paciente: "),
+					view.read("Ingrese el numero de contacto del paciente: "),
+					Status.ACTIVE);
+
+							int posP = view.readInt("Ingrese la posición del paciente: ");
+							roomPos.getListPatients().get(posP).setStatus(Status.INACTIVE);
+							roomPos.addPatient(patient);
 					}
 				} else {
 					Exception e = new DuplicateException("La habitacion no existe.");
