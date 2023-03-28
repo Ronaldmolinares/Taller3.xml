@@ -5,11 +5,10 @@ import model.*;
 import exceptions.*;
 
 public class Presenter {
-
-	Room room = new Room();
-	Patient patient;
-	FileXML fileXML;
-	Sql sql = new Sql();
+	  Room room = new Room();
+	  Patient patient;
+	  FileXML fileXML;
+	  Sql sql = new Sql();
     private View view = new View();
     
     private void run() {
@@ -60,7 +59,7 @@ public class Presenter {
     private void saveXML(){}
 
     private void addRoom() {
-        try {
+		try {
 			int id = view.readInt("Ingrese el id de la habitacion: ");
 			int posRoom = sql.findRoom(id);
 
@@ -80,16 +79,16 @@ public class Presenter {
 					sql.addRoom(room);
 				} else {
 					view.showMessage("La habitacion en el piso " + numFloor + " y con numero " + numRoom + " ya existe.");
-				}
-			} else {
-				Exception e = new DuplicateException("Ya existe esta habitacion.");
-				view.showMessage(e.getMessage());
-			}
+        }
+			  } else {
+				  Exception e = new DuplicateException("Ya existe esta habitacion.");
+				  view.showMessage(e.getMessage());
+			  }
 
-		} catch (Exception em) {
-			Exception e = new ValueNotFoundException("Ya existe esta habitacionnnnn.");
-			view.showMessage(e.getMessage());
-		}
+		  } catch (Exception em) {
+			  Exception e = new ValueNotFoundException("Ya existe esta habitacionnnnn.");
+			  view.showMessage(e.getMessage());
+		  }
     }
 
     private void addPatient() {
@@ -121,6 +120,6 @@ public class Presenter {
     }
 
     public static void main(String[] args) {	
-		new Presenter().run();	
+		new Presenter().run();
 	}
 }
