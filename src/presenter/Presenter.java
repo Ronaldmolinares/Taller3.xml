@@ -17,6 +17,13 @@ public class Presenter {
 		int option = view.readInt("Seleccione una de las opciones ");
     }
 
+    private void addRoom() {
+        int id = view.readInt("Ingrese el id de la habitacion: ");
+        short numRoom = view.readShort("Ingrese el numero de piso de la habitacion: ");
+        int numFloor = view.readShort("Ingrese el numero de la habitacion: ");
+        int numBed =  view.readInt("Ingrese el numero de camas de la habitación: ");
+    }
+
     public static void main(String[] args) {	
 		new Presenter().run();	
 	}
