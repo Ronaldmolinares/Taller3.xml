@@ -5,9 +5,10 @@ import model.*;
 import exceptions.*;
 
 public class Presenter {
-
-    Sql sql = new Sql();
-    Room room = new Room();
+	  Room room = new Room();
+	  Patient patient;
+	  FileXML fileXML;
+	  Sql sql = new Sql();
     private View view = new View();
     
     private void run() {
@@ -78,23 +79,44 @@ public class Presenter {
 					sql.addRoom(room);
 				} else {
 					view.showMessage("La habitacion en el piso " + numFloor + " y con numero " + numRoom + " ya existe.");
-				}
-			} else {
-				Exception e = new DuplicateException("Ya existe esta habitacion.");
-				view.showMessage(e.getMessage());
-			}
+        }
+			  } else {
+				  Exception e = new DuplicateException("Ya existe esta habitacion.");
+				  view.showMessage(e.getMessage());
+			  }
 
-		} catch (Exception em) {
-			Exception e = new ValueNotFoundException("Ya existe esta habitacionnnnn.");
-			view.showMessage(e.getMessage());
-		}
-	}
+		  } catch (Exception em) {
+			  Exception e = new ValueNotFoundException("Ya existe esta habitacionnnnn.");
+			  view.showMessage(e.getMessage());
+		  }
+    }
 
     private void addPatient() {
-        view.showMessage("Se debe crear primero una habitacion para poder agregar el nuevo paciente." + "\n");
-        int id = view.readInt("Ingrese el id de la habitacion en la que estara el paciente: ");
-        view.read("Ingrese el nombre del paciente: ");
-        view.read("Ingrese el apellido del paciente: ");
+        
+		if (sql.getListRoom().size() == 0) {
+			view.showMessage("Se debe crear primero una habitacion para poder agregar el nuevo paciente." + "\n");
+		} else {
+
+			try {
+				int id = view.readInt("Ingrese el id de la habitacion en la que estara el paciente: ");
+				if (sql.findRoom(id) != -1) {
+					patient = new Patient (view.read("Ingrese el nombre del paciente: "),
+							view.read("Ingrese el apellido del paciente: "),
+							view.read("Ingrese el numero de contacto del paciente: "),
+							Status.ACTIVE
+							);
+
+					room.addPatient(patient);
+				} else {
+					Exception e = new DuplicateException("La habitacion no existe.");
+					view.showMessage(e.getMessage());
+				}
+
+			} catch (Exception e) {
+				e = new ValueNotFoundException("La habitacion no existe.");
+				view.showMessage(e.getMessage());
+			}
+		}     
     }
 
     public static void main(String[] args) {	
