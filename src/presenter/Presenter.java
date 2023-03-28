@@ -1,9 +1,13 @@
 package presenter;
 
 import view.View;
+import model.*;
+import exceptions.*;
 
 public class Presenter {
 
+    Sql sql = new Sql();
+    Room room = new Room();
     private View view = new View();
     
     private void run() {
@@ -54,11 +58,37 @@ public class Presenter {
     private void saveXML(){}
 
     private void addRoom() {
-        int id = view.readInt("Ingrese el id de la habitacion: ");
-        short numRoom = view.readShort("Ingrese el numero de piso de la habitacion: ");
-        int numFloor = view.readShort("Ingrese el numero de la habitacion: ");
-        int numBed =  view.readInt("Ingrese el numero de camas de la habitación: ");
-    }
+		try {
+			int id = view.readInt("Ingrese el id de la habitacion: ");
+			int posRoom = sql.findRoom(id);
+
+			if (posRoom == -1) {
+				short numRoom = view.readShort("Ingrese el numero de piso de la habitacion: ");
+				int numFloor = view.readShort("Ingrese el numero de la habitacion: ");
+
+				Room r = sql.getListRoom().get(posRoom);
+				boolean isRoomFloor = false;
+
+				for (Room ro : sql.getListRoom()) {
+					if (numRoom == r.getRoomNumber() && numFloor == r.getFloorNumber())
+						isRoomFloor = true;
+				} if (!isRoomFloor) {
+					int numBed =  view.readInt("Ingrese el numero de camas de la habitación: ");
+					Room room = new Room (id,  numFloor, numRoom, numBed);
+					sql.addRoom(room);
+				} else {
+					view.showMessage("La habitacion en el piso " + numFloor + " y con numero " + numRoom + " ya existe.");
+				}
+			} else {
+				Exception e = new DuplicateException("Ya existe esta habitacion.");
+				view.showMessage(e.getMessage());
+			}
+
+		} catch (Exception em) {
+			Exception e = new ValueNotFoundException("Ya existe esta habitacionnnnn.");
+			view.showMessage(e.getMessage());
+		}
+	}
 
     private void addPatient() {
         view.showMessage("Se debe crear primero una habitacion para poder agregar el nuevo paciente." + "\n");
@@ -68,6 +98,6 @@ public class Presenter {
     }
 
     public static void main(String[] args) {	
-		new Presenter().run();	
+		new Presenter().run();
 	}
 }
