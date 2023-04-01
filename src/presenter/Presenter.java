@@ -160,14 +160,14 @@ public class Presenter {
 						roomPos.addPatient(patient);
 
 					} else {
+						view.showMessage("Lista de pacientes en estado activo: ");
 						for (Patient p : roomPos.getListPatients()) {
-							view.showMessage("Lista de pacientes en estado activo: ");
 							if (p.getStatus().equals(Status.ACTIVE)) {
 								view.showMessage("Nombre: " + p.getName() + ", Apellido: " + p.getLastName() + ", Telefono: "
 								+ p.getPhone());
 							}
 						}
-						view.showMessage("se excede el número de camas para agregar otro paciente, sin embargo se va remplazar al paciente en la posicion que elija. ");
+						view.showMessage("Se excede el número de camas para agregar otro paciente, sin embargo se va remplazar al paciente en la posicion que elija. ");
 
 						patient = new Patient(view.read("Ingrese el nombre del paciente: "),
 					view.read("Ingrese el apellido del paciente: "),
@@ -184,7 +184,7 @@ public class Presenter {
 				}
 
 			} catch (Exception e) {
-				e = new ValueNotFoundException("La habitacion no existe.");
+				e = new ValueNotFoundException("Error al crear paciente.");
 				view.showMessage(e.getMessage());
 			}
 		}
