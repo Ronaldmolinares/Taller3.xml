@@ -145,7 +145,7 @@ public class Presenter {
 		} else {
 
 			try {
-				int id = view.readInt("Ingrese el id de la habitacion en la que estara el paciente: ");
+				int id = view.readInt("Ingrese el id de la habitacion en la que estara el paciente:");
 				int position = sql.findRoom(id);
 
 				if (position != -1) {
