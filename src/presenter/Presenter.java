@@ -27,30 +27,30 @@ public class Presenter {
 			option = view.readInt("Seleccione una de las opciones ");
 
 			switch (option) {
-				case 1:
-					addRoom();
-					break;
+			case 1:
+				addRoom();
+				break;
 
-				case 2:
-					addPatient();
-					break;
+			case 2:
+				addPatient();
+				break;
 
-				case 3:
-					historyRooms();
-					break;
+			case 3:
+				historyRooms();
+				break;
 
-				case 4:
-					saveXML();
-					break;
+			case 4:
+				saveXML();
+				break;
 
-				case 5:
-					// lógica de salida de la aplicación.
-					exit = true;
-					System.exit(0);
-					break;
+			case 5:
+				// lógica de salida de la aplicación.
+				exit = true;
+				System.exit(0);
+				break;
 
-				default:
-					view.showMessage("Solo números entre 1 y 5");
+			default:
+				view.showMessage("Solo números entre 1 y 5");
 			}
 
 		} while (!exit);
@@ -63,12 +63,12 @@ public class Presenter {
 		if (posRoom != -1) {
 			Room r = sql.getListRoom().get(posRoom);
 			if (r.getId() == id) {
-				
+
 				for (Patient p : r.getListPatients()) {
-					//cambio
+					//cambio					
 					if (p.getStatus().equals(Status.ACTIVE)) {
-					System.out.println("Nombre: " + p.getName() + ", Apellido: " + p.getLastName() + ", Telefono: "
-							+ p.getPhone());
+						System.out.println("Nombre: " + p.getName() + ", Apellido: " + p.getLastName() + ", Telefono: "
+								+ p.getPhone());
 					}
 				}
 			}
@@ -133,7 +133,7 @@ public class Presenter {
 			}
 
 		} catch (Exception em) {
-			Exception e = new ValueNotFoundException("Ya existe esta habitacionnnnn.");
+			Exception e = new ValueNotFoundException("Habitacion ya existente.");
 			view.showMessage(e.getMessage());
 		}
 	}
@@ -154,29 +154,33 @@ public class Presenter {
 
 					if (roomPos.getListPatients().size() < roomPos.getBedNumbers()) {
 						patient = new Patient(view.read("Ingrese el nombre del paciente: "),
-						view.read("Ingrese el apellido del paciente: "),
-						view.read("Ingrese el numero de contacto del paciente: "),
-						Status.ACTIVE);
+								view.read("Ingrese el apellido del paciente: "),
+								view.read("Ingrese el numero de contacto del paciente: "),
+								Status.ACTIVE);
 						roomPos.addPatient(patient);
 
 					} else {
 						view.showMessage("Lista de pacientes en estado activo: ");
+
+						int i = 0;
 						for (Patient p : roomPos.getListPatients()) {
 							if (p.getStatus().equals(Status.ACTIVE)) {
 								view.showMessage("Nombre: " + p.getName() + ", Apellido: " + p.getLastName() + ", Telefono: "
-								+ p.getPhone());
+										+ p.getPhone() + " -posicion: "+ i);
 							}
+							i++;
 						}
+						
 						view.showMessage("Se excede el número de camas para agregar otro paciente, sin embargo se va remplazar al paciente en la posicion que elija. ");
-
+					
 						patient = new Patient(view.read("Ingrese el nombre del paciente: "),
-					view.read("Ingrese el apellido del paciente: "),
-					view.read("Ingrese el numero de contacto del paciente: "),
-					Status.ACTIVE);
+								view.read("Ingrese el apellido del paciente: "),
+								view.read("Ingrese el numero de contacto del paciente: "),
+								Status.ACTIVE);
 
-							int posP = view.readInt("Ingrese la posición del paciente: ");
-							roomPos.getListPatients().get(posP).setStatus(Status.INACTIVE);
-							roomPos.addPatient(patient);
+						int posP = view.readInt("Ingrese la posición del paciente a rempalzar: ");
+						roomPos.getListPatients().get(posP).setStatus(Status.INACTIVE);
+						roomPos.addPatient(patient);
 					}
 				} else {
 					Exception e = new DuplicateException("La habitacion no existe.");
@@ -184,7 +188,7 @@ public class Presenter {
 				}
 
 			} catch (Exception e) {
-				e = new ValueNotFoundException("Error al crear paciente.");
+				e = new ValueNotFoundException("Error al crear paciente (posicion no valida).");
 				view.showMessage(e.getMessage());
 			}
 		}
