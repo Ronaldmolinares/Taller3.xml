@@ -55,7 +55,6 @@ public class Presenter {
 
 		} while (!exit);
 	}
-
 	//Metodo encargado de mostraar el historial de pacientes por habitacion
 	private void historyRooms() {
 		int id = view.readInt("Ingrese el id de la habitación: ");
@@ -103,7 +102,6 @@ public class Presenter {
 				}
 
 				short numRoom = view.readShort("Ingrese el numero de la habitacion: ");
-
 				boolean isRoomFloor = false;
 
 				for (Room ro : sql.getListRoom()) {
