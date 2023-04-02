@@ -54,8 +54,5 @@ public class Patient {
 	public String toString() {
 		return "Patient (name=" + name + ", lastName=" + lastName + ", phone=" + phone + ", status=" + status + ")";
 	}
-
-
-	
 	
 }
