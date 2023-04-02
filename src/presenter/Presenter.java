@@ -12,10 +12,12 @@ public class Presenter {
 	Sql sql = new Sql();
 	private View view = new View();
 
+	//Ejecucion del programa
 	private void run() {
 		boolean exit = false;
 		int option;
 
+		//Menu
 		do {
 			view.showMessage("******** Bienvenido a AppColsanitas ********");
 			view.showMessage("1. Crear habitacion.");
@@ -56,16 +58,17 @@ public class Presenter {
 		} while (!exit);
 	}
 
+	//Metodo encargado de mostraar el historial de pacientes por habitacion
 	private void historyRooms() {
 		int id = view.readInt("Ingrese el id de la habitación: ");
+		//validamos que la habitacion exista 
 		int posRoom = sql.findRoom(id);
-
+		//Si es diferente a -1 quiere decir que la habitacion existe y por tanto me muestra la lista de pacientes que hay en la habitacion
 		if (posRoom != -1) {
 			Room r = sql.getListRoom().get(posRoom);
 			if (r.getId() == id) {
-
 				for (Patient p : r.getListPatients()) {
-					//cambio					
+					//Valido que los pacientes de la habitacion esten en estado activo			
 					if (p.getStatus().equals(Status.ACTIVE)) {
 						System.out.println("Nombre: " + p.getName() + ", Apellido: " + p.getLastName() + ", Telefono: "
 								+ p.getPhone());
@@ -81,27 +84,28 @@ public class Presenter {
 	private void saveXML() {
 	}
 
+	//Metodo encargado de añadir una habitacion
 	private void addRoom() {
 		try {
 			int id = view.readInt("Ingrese el id de la habitacion: ");
 			int posRoom = sql.findRoom(id);
-
+			//Si entra al if significa que aún no se ha creado una habitacion con ese id, por tanto la crea
 			if (posRoom == -1) {
 
 				boolean exit1 = false;
-				short numRoom = 0;
+				int numFloor = 0;
 				while (!exit1) {
-					numRoom = view.readShort("Ingrese el numero de piso de la habitacion: ");
-					if (numRoom >= 1 && numRoom <= 30) {
+					//validamos que cumpla con la condicion del numero de pisos (1 - 30)
+					numFloor = view.readShort("Ingrese el numero de piso de la habitacion: ");
+					if (numFloor >= 1 && numFloor <= 30) {
 						exit1 = true;
 					} else {
 						view.showMessage("El número de piso solo debe ser de 1 a 30." + "\n");
 					}
 				}
 
-				int numFloor = view.readShort("Ingrese el numero de la habitacion: ");
+				short numRoom = view.readShort("Ingrese el numero de la habitacion: ");
 
-				// Room r = sql.getListRoom().get(posRoom);
 				boolean isRoomFloor = false;
 
 				for (Room ro : sql.getListRoom()) {
@@ -138,6 +142,7 @@ public class Presenter {
 		}
 	}
 
+	//Metodo encargado de añadir un paciente
 	private void addPatient() {
 
 		if (sql.getListRoom().size() == 0) {
@@ -171,8 +176,9 @@ public class Presenter {
 							i++;
 						}
 						
-						view.showMessage("Se excede el número de camas para agregar otro paciente, sin embargo se va remplazar al paciente en la posicion que elija. ");
-					
+						view.showMessage("Se excede el número de camas para agregar otro paciente, sin embargo se va remplazar al paciente en la posicion que elija. " + "\n");
+						view.showMessage("Primero ingrese los datos del paciente, despues elija una de las posiciones mostradas en pantalla");
+
 						patient = new Patient(view.read("Ingrese el nombre del paciente: "),
 								view.read("Ingrese el apellido del paciente: "),
 								view.read("Ingrese el numero de contacto del paciente: "),
