@@ -25,9 +25,7 @@ public class Presenter {
 			view.showMessage("3. Mostrar historial de pacientes por habitacion.");
 			view.showMessage("4. Generar XML.");
 			view.showMessage("5. Salir.");
-
 			option = view.readInt("Seleccione una de las opciones ");
-
 			switch (option) {
 			case 1:
 				addRoom();
