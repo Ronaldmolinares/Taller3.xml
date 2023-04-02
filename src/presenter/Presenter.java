@@ -137,7 +137,6 @@ public class Presenter {
 			view.showMessage(e.getMessage());
 		}
 	}
-
 	//Metodo encargado de añadir un paciente
 	private void addPatient() {
 
