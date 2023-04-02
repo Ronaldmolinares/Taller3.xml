@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Sql {
 	
 	private ArrayList<Room> listRoom = new ArrayList<Room>();
-	//private ArrayList<Patient> listPatient = new ArrayList<Patient>();
 	
 	public ArrayList<Room> getListRoom() {
 		return listRoom;
@@ -13,9 +12,6 @@ public class Sql {
 	public void setListRoom(ArrayList<Room> listRoom) {
 		this.listRoom = listRoom;
 	}
-//	public ArrayList<Patient> getListpatient() {
-//		return listPatient;
-//	}
 //	public void setListpatient(ArrayList<Patient> listpatient) {
 //		this.listPatient = listpatient;
 //	}
