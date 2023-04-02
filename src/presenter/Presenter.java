@@ -174,7 +174,7 @@ public class Presenter {
 										+ p.getPhone() + " -posicion: "+ i);
 							}
 							i++;
-						}
+						}	
 						
 						view.showMessage("Se excede el número de camas para agregar otro paciente, sin embargo se va remplazar al paciente en la posicion que elija. " + "\n");
 						view.showMessage("Primero ingrese los datos del paciente, despues elija una de las posiciones mostradas en pantalla");
