@@ -17,10 +17,6 @@ public class Sql {
 		listRoom.add(room);
 	}
 	
-//	public void addPatient(Patient patient) {
-//		listPatient.add(patient);
-//	}
-	
 	public int findRoom(int id) {
 		int position = -1;
 		for (Room room : listRoom) {
