@@ -117,6 +117,7 @@ public class Presenter {
 						if (numBed >= 1 && numBed <= 5) {
 							Room room = new Room(id, numFloor, numRoom, numBed);
 							sql.addRoom(room);
+							view.showMessage("Habitación creada con exito.");
 							exit = true;
 						} else {
 							view.showMessage("El número de camas solo debe ser de 1 a 5." + "\n");
@@ -160,7 +161,7 @@ public class Presenter {
 								view.read("Ingrese el numero de contacto del paciente: "),
 								Status.ACTIVE);
 						roomPos.addPatient(patient);
-
+						view.showMessage("Paciente agregado con exito.");
 					} else {
 						view.showMessage("Lista de pacientes en estado activo: ");
 
