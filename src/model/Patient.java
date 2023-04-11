@@ -7,15 +7,22 @@ public class Patient {
 	private Status status;
 
 	public Patient() {
-		
+
 	}
-	
+
 	public Patient(String name, String lastName, String phone, Status status) {
 		super();
 		this.name = name;
 		this.lastName = lastName;
 		this.phone = phone;
 		this.status = status;
+	}
+
+	public Patient(String name, String lastName, String phone) {
+		super();
+		this.name = name;
+		this.lastName = lastName;
+		this.phone = phone;
 	}
 
 	public String getName() {
@@ -41,7 +48,7 @@ public class Patient {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	
+
 	public Status getStatus() {
 		return status;
 	}
@@ -54,5 +61,5 @@ public class Patient {
 	public String toString() {
 		return "Patient (name=" + name + ", lastName=" + lastName + ", phone=" + phone + ", status=" + status + ")";
 	}
-	
+
 }
