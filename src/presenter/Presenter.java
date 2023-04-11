@@ -40,9 +40,7 @@ public class Presenter {
 			view.showMessage("3. Mostrar historial de pacientes por habitacion.");
 			view.showMessage("4. Generar XML.");
 			view.showMessage("5. Salir.");
-
 			option = view.readInt("Seleccione una de las opciones ");
-
 			switch (option) {
 				case 1:
 					addRoom();
@@ -73,8 +71,8 @@ public class Presenter {
 
 		} while (!exit);
 	}
-
-	// Metodo encargado de mostraar el historial de pacientes por habitacion
+  
+	//Metodo encargado de mostraar el historial de pacientes por habitacion
 	private void historyRooms() {
 		int id = view.readInt("Ingrese el id de la habitación: ");
 		// validamos que la habitacion exista
@@ -172,7 +170,6 @@ public class Presenter {
 				}
 
 				short numRoom = view.readShort("Ingrese el numero de la habitacion: ");
-
 				boolean isRoomFloor = false;
 
 				for (Room ro : sql.getListRoom()) {
@@ -187,6 +184,7 @@ public class Presenter {
 						if (numBed >= 1 && numBed <= 5) {
 							Room room = new Room(id, numFloor, numRoom, numBed);
 							sql.addRoom(room);
+							view.showMessage("Habitación creada con exito.");
 							exit = true;
 						} else {
 							view.showMessage("El número de camas solo debe ser de 1 a 5." + "\n");
@@ -230,7 +228,7 @@ public class Presenter {
 								view.read("Ingrese el numero de contacto del paciente: "),
 								Status.ACTIVE);
 						roomPos.addPatient(patient);
-
+						view.showMessage("Paciente agregado con exito.");
 					} else {
 						view.showMessage("Lista de pacientes en estado activo: ");
 
@@ -258,6 +256,7 @@ public class Presenter {
 						int posP = view.readInt("Ingrese la posición del paciente a rempalzar: ");
 						roomPos.getListPatients().get(posP).setStatus(Status.INACTIVE);
 						roomPos.addPatient(patient);
+						view.showMessage("Paciente agregado.");
 					}
 				} else {
 					Exception e = new DuplicateException("La habitacion no existe.");

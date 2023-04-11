@@ -78,5 +78,4 @@ public class Room {
 		return "Room {Id: " + id + ", Floor Number: " + floorNumber + ", Room Number: " + roomNumber + ", List Patients: "+ getListPatients() + "}" + "\n";
 	}
 	
-	
 }
