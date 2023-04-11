@@ -8,11 +8,11 @@ public class Room {
 	private int floorNumber;
 	private short roomNumber;
 	private ArrayList<Patient> listPatients = new ArrayList<Patient>();
-	
-	public Room () {
-		
+
+	public Room() {
+
 	}
-	
+
 	public Room(int id, int floorNumber, short roomNumber, int bedNumbers) {
 		this.id = id;
 		this.floorNumber = floorNumber;
@@ -27,6 +27,13 @@ public class Room {
 		this.floorNumber = floorNumber;
 		this.roomNumber = roomNumber;
 		this.listPatients = listPatients;
+	}
+
+	public Room(int i, int j, int k, short s) {
+		this.id = i;
+		this.bedNumbers = j;
+		this.floorNumber = k;
+		this.roomNumber = s;
 	}
 
 	public int getId() {
@@ -52,15 +59,15 @@ public class Room {
 	public void setRoomNumber(short roomNumber) {
 		this.roomNumber = roomNumber;
 	}
-	
+
 	public ArrayList<Patient> getListPatients() {
 		return listPatients;
 	}
-	
+
 	public void addPatient(Patient patient) {
 		listPatients.add(patient);
 	}
-	
+
 	public int getBedNumbers() {
 		return bedNumbers;
 	}
@@ -75,7 +82,8 @@ public class Room {
 
 	@Override
 	public String toString() {
-		return "Room {Id: " + id + ", Floor Number: " + floorNumber + ", Room Number: " + roomNumber + ", List Patients: "+ getListPatients() + "}" + "\n";
+		return "Room {Id: " + id + ", Floor Number: " + floorNumber + ", Room Number: " + roomNumber
+				+ ", List Patients: " + getListPatients() + "}" + "\n";
 	}
-	
+
 }

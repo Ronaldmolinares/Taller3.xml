@@ -20,10 +20,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import java.io.IOException;
 
 public class Presenter {
-
 	Room room = new Room();
 	Patient patient;
 	FileXML fileXML;
@@ -34,17 +32,16 @@ public class Presenter {
 	private void run() {
 		boolean exit = false;
 		int option;
-
+		readXml();
 		// Menu
 		do {
-			view.showMessage("******** Bienvenido a AppColsanitas ********");
-			readXml();
+			view.showMessage("\n******** Bienvenido a AppColsanitas ********");
 			view.showMessage("1. Crear habitacion.");
 			view.showMessage("2. Crear paciente.");
 			view.showMessage("3. Mostrar historial de pacientes por habitacion.");
 			view.showMessage("4. Generar XML.");
 			view.showMessage("5. Salir.");
-			
+
 			option = view.readInt("Seleccione una de las opciones ");
 			switch (option) {
 				case 1:
@@ -59,6 +56,18 @@ public class Presenter {
 					break;
 
 				case 4:
+					room = new Room(1, 2, 2, (short) 205);
+					patient = new Patient("Lunna", "Sosa", "21321", Status.ACTIVE);
+					room.addPatient(patient);
+					patient = new Patient("Camila", "Espitia", "557880", Status.ACTIVE);
+					room.addPatient(patient);
+					sql.addRoom(room);
+					room = new Room(2, 3, 3, (short) 309);
+					patient = new Patient("Ana", "Espitia", "589743587", Status.ACTIVE);
+					room.addPatient(patient);
+					patient = new Patient("Liyen", "Merchan", "88098", Status.ACTIVE);
+					room.addPatient(patient);
+					sql.addRoom(room);
 					saveXML();
 					break;
 
@@ -79,20 +88,21 @@ public class Presenter {
 	private void readXml() {
 		File inputFile = new File("src/resources/rooms.xml");
 		if (inputFile.exists()) {
+			view.showMessage("El archivo " + inputFile.getName() + " existe y contiene :");
 			Room room = new Room();
 			Patient patient = new Patient();
-			String Id = null;
-			String roomNumber = null;
-			String floorNumber = null;
-			String bedNumbers = null;
-			Sql sql = new Sql();
+			int Id = -1;
+			short roomNumber = -1;
+			int floorNumber = -1;
+			int bedNumbers = -1;
+			Status status = Status.INACTIVE;
 			try {
 				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 				Document doc = dBuilder.parse(inputFile);
 				doc.getDocumentElement().normalize();
 
-				System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+				System.out.println("\nRoot element :" + doc.getDocumentElement().getNodeName());
 
 				NodeList nList = doc.getElementsByTagName("room");
 
@@ -106,16 +116,24 @@ public class Presenter {
 
 						Element eElement = (Element) nNode;
 
-						System.out.println("Room id : " + eElement.getAttribute("id"));
-						Id = eElement.getAttribute("id");
+						System.out.println("\nRoom id : " + eElement.getAttribute("id"));
+						Id = Integer.parseInt(eElement.getAttribute("id"));
+						System.out.println(
+								"Bed Numbers : "
+										+ eElement.getElementsByTagName("bedNumbers").item(0).getTextContent());
+						bedNumbers = Integer
+								.parseInt(eElement.getElementsByTagName("bedNumbers").item(0).getTextContent());
 						System.out.println(
 								"Floor number : "
 										+ eElement.getElementsByTagName("floorNumber").item(0).getTextContent());
-						floorNumber = eElement.getElementsByTagName("floorNumber").item(0).getTextContent();
+						floorNumber = Integer
+								.parseInt(eElement.getElementsByTagName("floorNumber").item(0).getTextContent());
 						System.out.println(
 								"Room number : "
 										+ eElement.getElementsByTagName("roomNumber").item(0).getTextContent());
-						roomNumber = eElement.getElementsByTagName("roomNumber").item(0).getTextContent();
+						roomNumber = Short
+								.valueOf(eElement.getElementsByTagName("roomNumber").item(0).getTextContent());
+						room = new Room(Id, bedNumbers, floorNumber, roomNumber);
 						NodeList patientsList = eElement.getElementsByTagName("patient");
 						System.out.println("Number of patients : " + patientsList.getLength());
 
@@ -129,19 +147,21 @@ public class Presenter {
 										+ patientElement.getElementsByTagName("lastName").item(0).getTextContent());
 								System.out.println("Contact phone number : " + patientElement
 										.getElementsByTagName("contactPhoneNumber").item(0).getTextContent());
-
+								System.out.println("Status of patient : " + patientElement
+										.getElementsByTagName("status").item(0).getTextContent());
+								status = Status.valueOf(patientElement
+										.getElementsByTagName("status").item(0).getTextContent().toUpperCase());
 								patient = new Patient(
 										patientElement.getElementsByTagName("firstName").item(0).getTextContent(),
 										patientElement.getElementsByTagName("lastName").item(0).getTextContent(),
 										patientElement.getElementsByTagName("contactPhoneNumber").item(0)
-												.getTextContent());
+												.getTextContent(),
+										status);
 								room.addPatient(patient);
-
 							}
 						}
+
 					}
-					room = new Room(Integer.parseInt(Id), Integer.parseInt(bedNumbers), Integer.parseInt(floorNumber),
-							Short.valueOf(roomNumber), room.getListPatients());
 					sql.addRoom(room);
 				}
 			} catch (Exception e) {
@@ -187,6 +207,10 @@ public class Presenter {
 			for (int i = 0; i < sql.getListRoom().size(); i++) {
 				Element room = document.createElement("room");
 				room.setAttribute("id", "" + sql.getListRoom().get(i).getId());
+				Element bedNumbers = document.createElement("bedNumbers");
+				Text valueBedNumbers = document.createTextNode(sql.getListRoom().get(i).getBedNumbers() + "");
+				bedNumbers.appendChild(valueBedNumbers);
+				room.appendChild(bedNumbers);
 				Element floorNumber = document.createElement("floorNumber");
 				Text valueFloorNumber = document.createTextNode(sql.getListRoom().get(i).getFloorNumber() + "");
 				floorNumber.appendChild(valueFloorNumber);
@@ -213,6 +237,11 @@ public class Presenter {
 							.createTextNode(sql.getListRoom().get(i).getListPatients().get(j).getPhone() + "");
 					contactPhoneNumber.appendChild(valueContactPhoneNumber);
 					patient.appendChild(contactPhoneNumber);
+					Element status = document.createElement("status");
+					Text valuestatus = document
+							.createTextNode(sql.getListRoom().get(i).getListPatients().get(j).getStatus() + "");
+					status.appendChild(valuestatus);
+					patient.appendChild(status);
 					patients.appendChild(patient);
 				}
 				room.appendChild(patients);

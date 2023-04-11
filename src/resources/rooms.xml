@@ -1,33 +1,49 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><hospital>
-<rooms>
-	<room id="1">
-		<floorNumber>1</floorNumber>
-		<roomNumber>203</roomNumber>
-		<patients>
-			<patient>
-				<firstName>Lunna</firstName>
-				<lastName>Sosa</lastName>
-				<contactPhoneNumber>342414</contactPhoneNumber>
-			</patient>
-			<patient>
-				<firstName>Lunna</firstName>
-				<lastName>Sosa</lastName>
-				<contactPhoneNumber>342414</contactPhoneNumber>
-			</patient>
-		</patients>
-	</room><room id="2">
-		<floorNumber>1</floorNumber><roomNumber>203</roomNumber><patients>
-		<patient>
-			<firstName>Lunna</firstName>
-			<lastName>Sosa</lastName>
-			<contactPhoneNumber>342414</contactPhoneNumber>
-		</patient>
-		<patient>
-		<firstName>Lunna</firstName>
-		<lastName>Sosa</lastName>
-		<contactPhoneNumber>342414</contactPhoneNumber>
-		</patient>
-	</patients>
-	</room>
-</rooms>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<hospital>
+    <rooms>
+        <room id="1">
+            <bedNumbers>2</bedNumbers>
+            <floorNumber>2</floorNumber>
+            <roomNumber>205</roomNumber>
+            <patients>
+                <patient>
+                    <firstName>Lunna</firstName>
+                    <lastName>Sosa</lastName>
+                    <contactPhoneNumber>21321</contactPhoneNumber>
+                    <status>INACTIVE</status>
+                </patient>
+                <patient>
+                    <firstName>Camila</firstName>
+                    <lastName>Espitia</lastName>
+                    <contactPhoneNumber>557880</contactPhoneNumber>
+                    <status>ACTIVE</status>
+                </patient>
+                <patient>
+                    <firstName>Karina</firstName>
+                    <lastName>Espitia</lastName>
+                    <contactPhoneNumber>3131</contactPhoneNumber>
+                    <status>ACTIVE</status>
+                </patient>
+            </patients>
+        </room>
+        <room id="2">
+            <bedNumbers>3</bedNumbers>
+            <floorNumber>3</floorNumber>
+            <roomNumber>309</roomNumber>
+            <patients>
+                <patient>
+                    <firstName>Ana</firstName>
+                    <lastName>Espitia</lastName>
+                    <contactPhoneNumber>589743587</contactPhoneNumber>
+                    <status>ACTIVE</status>
+                </patient>
+                <patient>
+                    <firstName>Liyen</firstName>
+                    <lastName>Merchan</lastName>
+                    <contactPhoneNumber>88098</contactPhoneNumber>
+                    <status>ACTIVE</status>
+                </patient>
+            </patients>
+        </room>
+    </rooms>
 </hospital>
