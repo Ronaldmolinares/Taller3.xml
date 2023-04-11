@@ -3,6 +3,21 @@ package presenter;
 import view.View;
 import model.*;
 import exceptions.*;
+import java.io.File;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 public class Presenter {
 
@@ -12,12 +27,12 @@ public class Presenter {
 	Sql sql = new Sql();
 	private View view = new View();
 
-	//Ejecucion del programa
+	// Ejecucion del programa
 	private void run() {
 		boolean exit = false;
 		int option;
 
-		//Menu
+		// Menu
 		do {
 			view.showMessage("******** Bienvenido a AppColsanitas ********");
 			view.showMessage("1. Crear habitacion.");
@@ -27,46 +42,48 @@ public class Presenter {
 			view.showMessage("5. Salir.");
 			option = view.readInt("Seleccione una de las opciones ");
 			switch (option) {
-			case 1:
-				addRoom();
-				break;
+				case 1:
+					addRoom();
+					break;
 
-			case 2:
-				addPatient();
-				break;
+				case 2:
+					addPatient();
+					break;
 
-			case 3:
-				historyRooms();
-				break;
+				case 3:
+					historyRooms();
+					break;
 
-			case 4:
-				saveXML();
-				break;
+				case 4:
+					saveXML();
+					break;
 
-			case 5:
-				// lógica de salida de la aplicación.
-				exit = true;
-				System.exit(0);
-				break;
+				case 5:
+					// lógica de salida de la aplicación.
+					saveXML();
+					exit = true;
+					System.exit(0);
+					break;
 
-			default:
-				view.showMessage("Solo números entre 1 y 5");
+				default:
+					view.showMessage("Solo números entre 1 y 5");
 			}
 
 		} while (!exit);
 	}
-	
+  
 	//Metodo encargado de mostraar el historial de pacientes por habitacion
 	private void historyRooms() {
 		int id = view.readInt("Ingrese el id de la habitación: ");
-		//validamos que la habitacion exista 
+		// validamos que la habitacion exista
 		int posRoom = sql.findRoom(id);
-		//Si es diferente a -1 quiere decir que la habitacion existe y por tanto me muestra la lista de pacientes que hay en la habitacion
+		// Si es diferente a -1 quiere decir que la habitacion existe y por tanto me
+		// muestra la lista de pacientes que hay en la habitacion
 		if (posRoom != -1) {
 			Room r = sql.getListRoom().get(posRoom);
 			if (r.getId() == id) {
 				for (Patient p : r.getListPatients()) {
-					//Valido que los pacientes de la habitacion esten en estado activo			
+					// Valido que los pacientes de la habitacion esten en estado activo
 					if (p.getStatus().equals(Status.ACTIVE)) {
 						System.out.println("Nombre: " + p.getName() + ", Apellido: " + p.getLastName() + ", Telefono: "
 								+ p.getPhone());
@@ -80,20 +97,70 @@ public class Presenter {
 	}
 
 	private void saveXML() {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		try {
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			DOMImplementation dom = builder.getDOMImplementation();
+			Document document = dom.createDocument(null, "hospital", null);
+			document.setXmlVersion("1.0");
+			Element rooms = document.createElement("rooms");
+			for (int i = 0; i < sql.getListRoom().size(); i++) {
+				Element room = document.createElement("room");
+				room.setAttribute("id", "" + sql.getListRoom().get(i).getId());
+				Element floorNumber = document.createElement("floorNumber");
+				Text valueFloorNumber = document.createTextNode(sql.getListRoom().get(i).getFloorNumber() + "");
+				floorNumber.appendChild(valueFloorNumber);
+				room.appendChild(floorNumber);
+				Element roomNumber = document.createElement("roomNumber"); // cambiar a roomNumber
+				Text valueRoomNumber = document.createTextNode(sql.getListRoom().get(i).getRoomNumber() + "");
+				roomNumber.appendChild(valueRoomNumber);
+				room.appendChild(roomNumber);
+				Element patients = document.createElement("patients"); // crear elemento patients
+				for (int j = 0; j < sql.getListRoom().get(i).getListPatients().size(); j++) {
+					Element patient = document.createElement("patient");
+					Element firstName = document.createElement("firstName");
+					Text textFirstName = document
+							.createTextNode(sql.getListRoom().get(i).getListPatients().get(j).getName() + "");
+					firstName.appendChild(textFirstName);
+					patient.appendChild(firstName);
+					Element lastName = document.createElement("lastName");
+					Text textLastName = document
+							.createTextNode(sql.getListRoom().get(i).getListPatients().get(j).getLastName() + "");
+					lastName.appendChild(textLastName);
+					patient.appendChild(lastName);
+					Element contactPhoneNumber = document.createElement("contactPhoneNumber");
+					Text valueContactPhoneNumber = document
+							.createTextNode(sql.getListRoom().get(i).getListPatients().get(j).getPhone() + "");
+					contactPhoneNumber.appendChild(valueContactPhoneNumber);
+					patient.appendChild(contactPhoneNumber);
+					patients.appendChild(patient);
+				}
+				room.appendChild(patients);
+				rooms.appendChild(room);
+			}
+			document.getDocumentElement().appendChild(rooms); 
+			Source source = new DOMSource(document);
+			Result result = new StreamResult(new File("src/resources/rooms.xml"));
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			transformer.transform(source, result);
+		} catch (ParserConfigurationException | TransformerException e) {
+			e.printStackTrace();
+		}
 	}
 
-	//Metodo encargado de añadir una habitacion
+	// Metodo encargado de añadir una habitacion
 	private void addRoom() {
 		try {
 			int id = view.readInt("Ingrese el id de la habitacion: ");
 			int posRoom = sql.findRoom(id);
-			//Si entra al if significa que aún no se ha creado una habitacion con ese id, por tanto la crea
+			// Si entra al if significa que aún no se ha creado una habitacion con ese id,
+			// por tanto la crea
 			if (posRoom == -1) {
 
 				boolean exit1 = false;
 				int numFloor = 0;
 				while (!exit1) {
-					//validamos que cumpla con la condicion del numero de pisos (1 - 30)
+					// validamos que cumpla con la condicion del numero de pisos (1 - 30)
 					numFloor = view.readShort("Ingrese el numero de piso de la habitacion: ");
 					if (numFloor >= 1 && numFloor <= 30) {
 						exit1 = true;
@@ -140,7 +207,7 @@ public class Presenter {
 		}
 	}
 
-	//Metodo encargado de añadir un paciente
+	// Metodo encargado de añadir un paciente
 	private void addPatient() {
 
 		if (sql.getListRoom().size() == 0) {
@@ -168,14 +235,18 @@ public class Presenter {
 						int i = 0;
 						for (Patient p : roomPos.getListPatients()) {
 							if (p.getStatus().equals(Status.ACTIVE)) {
-								view.showMessage("Nombre: " + p.getName() + ", Apellido: " + p.getLastName() + ", Telefono: "
-										+ p.getPhone() + " -posicion: "+ i);
+								view.showMessage(
+										"Nombre: " + p.getName() + ", Apellido: " + p.getLastName() + ", Telefono: "
+												+ p.getPhone() + " -posicion: " + i);
 							}
 							i++;
-						}	
-						
-						view.showMessage("Se excede el número de camas para agregar otro paciente, sin embargo se va remplazar al paciente en la posicion que elija. " + "\n");
-						view.showMessage("Primero ingrese los datos del paciente, despues elija una de las posiciones mostradas en pantalla");
+						}
+
+						view.showMessage(
+								"Se excede el número de camas para agregar otro paciente, sin embargo se va remplazar al paciente en la posicion que elija. "
+										+ "\n");
+						view.showMessage(
+								"Primero ingrese los datos del paciente, despues elija una de las posiciones mostradas en pantalla");
 
 						patient = new Patient(view.read("Ingrese el nombre del paciente: "),
 								view.read("Ingrese el apellido del paciente: "),
