@@ -29,11 +29,11 @@ public class Room {
 		this.listPatients = listPatients;
 	}
 
-	public Room(int i, int j, int k, short s) {
-		this.id = i;
-		this.bedNumbers = j;
-		this.floorNumber = k;
-		this.roomNumber = s;
+	public Room(int id, int bedNumbers, int floorNumber, short roomNumber) {
+		this.id = id;
+		this.floorNumber = floorNumber;
+		this.roomNumber = roomNumber;
+		this.bedNumbers = bedNumbers;
 	}
 
 	public int getId() {

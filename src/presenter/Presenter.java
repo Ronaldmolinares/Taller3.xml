@@ -113,7 +113,6 @@ public class Presenter {
 					System.out.println("\nCurrent Element :" + nNode.getNodeName());
 
 					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
 						Element eElement = (Element) nNode;
 
 						System.out.println("\nRoom id : " + eElement.getAttribute("id"));
@@ -136,7 +135,6 @@ public class Presenter {
 						room = new Room(Id, bedNumbers, floorNumber, roomNumber);
 						NodeList patientsList = eElement.getElementsByTagName("patient");
 						System.out.println("Number of patients : " + patientsList.getLength());
-
 						for (int i = 0; i < patientsList.getLength(); i++) {
 							Node patientNode = patientsList.item(i);
 							if (patientNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -159,19 +157,19 @@ public class Presenter {
 										status);
 								room.addPatient(patient);
 							}
+							
 						}
 
 					}
 					sql.addRoom(room);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 			}
 		} else {
-			view.showMessage("No existe un archivo previo" + "\n");
+			System.err.println("No existe un arhivo inicial");
 		}
 	}
-
 	// Metodo encargado de mostraar el historial de pacientes por habitacion
 	private void historyRooms() {
 		int id = view.readInt("Ingrese el id de la habitación: ");
@@ -207,10 +205,10 @@ public class Presenter {
 			for (int i = 0; i < sql.getListRoom().size(); i++) {
 				Element room = document.createElement("room");
 				room.setAttribute("id", "" + sql.getListRoom().get(i).getId());
-				Element bedNumbers = document.createElement("bedNumbers");
-				Text valueBedNumbers = document.createTextNode(sql.getListRoom().get(i).getBedNumbers() + "");
-				bedNumbers.appendChild(valueBedNumbers);
-				room.appendChild(bedNumbers);
+				Element bedNumber = document.createElement("bedNumbers");
+				Text valuebedNumber = document.createTextNode(sql.getListRoom().get(i).getBedNumbers() + "");
+				bedNumber.appendChild(valuebedNumber);
+				room.appendChild(bedNumber);
 				Element floorNumber = document.createElement("floorNumber");
 				Text valueFloorNumber = document.createTextNode(sql.getListRoom().get(i).getFloorNumber() + "");
 				floorNumber.appendChild(valueFloorNumber);
