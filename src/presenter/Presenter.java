@@ -185,6 +185,7 @@ public class Presenter {
 						int posP = view.readInt("Ingrese la posición del paciente a rempalzar: ");
 						roomPos.getListPatients().get(posP).setStatus(Status.INACTIVE);
 						roomPos.addPatient(patient);
+						view.showMessage("Paciente agregado.");
 					}
 				} else {
 					Exception e = new DuplicateException("La habitacion no existe.");
