@@ -71,8 +71,8 @@ public class Presenter {
 
 		} while (!exit);
 	}
-  
-	//Metodo encargado de mostraar el historial de pacientes por habitacion
+
+	// Metodo encargado de mostraar el historial de pacientes por habitacion
 	private void historyRooms() {
 		int id = view.readInt("Ingrese el id de la habitación: ");
 		// validamos que la habitacion exista
@@ -107,6 +107,10 @@ public class Presenter {
 			for (int i = 0; i < sql.getListRoom().size(); i++) {
 				Element room = document.createElement("room");
 				room.setAttribute("id", "" + sql.getListRoom().get(i).getId());
+				Element bedNumber = document.createElement("bedNumbers");
+				Text valuebedNumber = document.createTextNode(sql.getListRoom().get(i).getBedNumbers() + "");
+				bedNumber.appendChild(valuebedNumber);
+				room.appendChild(bedNumber);
 				Element floorNumber = document.createElement("floorNumber");
 				Text valueFloorNumber = document.createTextNode(sql.getListRoom().get(i).getFloorNumber() + "");
 				floorNumber.appendChild(valueFloorNumber);
@@ -138,7 +142,7 @@ public class Presenter {
 				room.appendChild(patients);
 				rooms.appendChild(room);
 			}
-			document.getDocumentElement().appendChild(rooms); 
+			document.getDocumentElement().appendChild(rooms);
 			Source source = new DOMSource(document);
 			Result result = new StreamResult(new File("src/resources/rooms.xml"));
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
