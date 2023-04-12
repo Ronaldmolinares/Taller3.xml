@@ -23,6 +23,7 @@ public class Patient {
 		this.name = name;
 		this.lastName = lastName;
 		this.phone = phone;
+		this.status = Status.ACTIVE;
 	}
 
 	public String getName() {

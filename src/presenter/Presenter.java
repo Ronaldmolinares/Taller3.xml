@@ -34,12 +34,11 @@ public class Presenter {
 	private void run() {
 		boolean exit = false;
 		int option;
-
+		readXml();
 		// Menu
 		do {
-			view.showMessage("******** Bienvenido a AppColsanitas ********");
-			readXml();
-			view.showMessage("1. Crear habitacion.");
+			view.showMessage("\n******** Bienvenido a AppColsanitas ********");
+			view.showMessage("\n1. Crear habitacion.");
 			view.showMessage("2. Crear paciente.");
 			view.showMessage("3. Mostrar historial de pacientes por habitacion.");
 			view.showMessage("4. Generar XML.");
@@ -79,13 +78,11 @@ public class Presenter {
 	private void readXml() {
 		File inputFile = new File("src/resources/rooms.xml");
 		if (inputFile.exists()) {
-			Room room = new Room();
-			Patient patient = new Patient();
-			String Id = null;
-			String roomNumber = null;
-			String floorNumber = null;
-			String bedNumbers = null;
-			Sql sql = new Sql();
+			view.showMessage("Existe un archivo que contiene : ");
+			int Id = 0;
+			int bedNumbers = 0;
+			int floorNumber = 0;
+			short roomNumber = 0;
 			try {
 				DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 				DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -103,22 +100,28 @@ public class Presenter {
 					System.out.println("\nCurrent Element :" + nNode.getNodeName());
 
 					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
 						Element eElement = (Element) nNode;
-
 						System.out.println("Room id : " + eElement.getAttribute("id"));
-						Id = eElement.getAttribute("id");
-						System.out.println(
-								"Floor number : "
-										+ eElement.getElementsByTagName("floorNumber").item(0).getTextContent());
-						floorNumber = eElement.getElementsByTagName("floorNumber").item(0).getTextContent();
-						System.out.println(
-								"Room number : "
-										+ eElement.getElementsByTagName("roomNumber").item(0).getTextContent());
-						roomNumber = eElement.getElementsByTagName("roomNumber").item(0).getTextContent();
+						Id = Integer.parseInt(eElement.getAttribute("id"));
+						System.out.println("Bed numbers : "
+								+ eElement.getElementsByTagName("bedNumbers").item(0).getTextContent());
+						bedNumbers = Integer
+								.parseInt(eElement.getElementsByTagName("bedNumbers").item(0).getTextContent());
+						System.out.println("Floor number : "
+								+ eElement.getElementsByTagName("floorNumber").item(0).getTextContent());
+						floorNumber = Integer
+								.parseInt(eElement.getElementsByTagName("floorNumber").item(0).getTextContent());
+						System.out.println("Room number : "
+								+ eElement.getElementsByTagName("roomNumber").item(0).getTextContent());
+						// roomNumber =
+						// Short.valueOf(eElement.getElementsByTagName("roomNumber").item(0).getTextContent());
+						NodeList roomNumberList = eElement.getElementsByTagName("roomNumber");
+						if (roomNumberList.getLength() > 0) {
+							roomNumber = Short.valueOf(roomNumberList.item(0).getTextContent());
+						}
+						room = new Room(Id, bedNumbers, floorNumber, roomNumber);
 						NodeList patientsList = eElement.getElementsByTagName("patient");
 						System.out.println("Number of patients : " + patientsList.getLength());
-
 						for (int i = 0; i < patientsList.getLength(); i++) {
 							Node patientNode = patientsList.item(i);
 							if (patientNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -129,29 +132,25 @@ public class Presenter {
 										+ patientElement.getElementsByTagName("lastName").item(0).getTextContent());
 								System.out.println("Contact phone number : " + patientElement
 										.getElementsByTagName("contactPhoneNumber").item(0).getTextContent());
-
 								patient = new Patient(
 										patientElement.getElementsByTagName("firstName").item(0).getTextContent(),
 										patientElement.getElementsByTagName("lastName").item(0).getTextContent(),
 										patientElement.getElementsByTagName("contactPhoneNumber").item(0)
 												.getTextContent());
 								room.addPatient(patient);
-
 							}
+							
 						}
+						sql.addRoom(room);
 					}
-					room = new Room(Integer.parseInt(Id), Integer.parseInt(bedNumbers), Integer.parseInt(floorNumber),
-							Short.valueOf(roomNumber), room.getListPatients());
-					sql.addRoom(room);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 			}
 		} else {
-			view.showMessage("No existe un archivo previo" + "\n");
+			System.err.println("No existe un arhivo inicial");
 		}
 	}
-
 	// Metodo encargado de mostraar el historial de pacientes por habitacion
 	private void historyRooms() {
 		int id = view.readInt("Ingrese el id de la habitación: ");
@@ -187,6 +186,10 @@ public class Presenter {
 			for (int i = 0; i < sql.getListRoom().size(); i++) {
 				Element room = document.createElement("room");
 				room.setAttribute("id", "" + sql.getListRoom().get(i).getId());
+				Element bedNumber = document.createElement("bedNumbers");
+				Text valuebedNumber = document.createTextNode(sql.getListRoom().get(i).getBedNumbers() + "");
+				bedNumber.appendChild(valuebedNumber);
+				room.appendChild(bedNumber);
 				Element floorNumber = document.createElement("floorNumber");
 				Text valueFloorNumber = document.createTextNode(sql.getListRoom().get(i).getFloorNumber() + "");
 				floorNumber.appendChild(valueFloorNumber);
